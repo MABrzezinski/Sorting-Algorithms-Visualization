@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sorting Algorithms Visualization</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/charts.css/dist/charts.min.css"
+    />
+    <link rel="stylesheet" href="css/skeleton.css" />
+  </head>
+
+  <body>
+    <div class="container" style="margin-top: 4%">
+      <h1>Sorting Algorithms Visualization</h1>
+
+      <div class="row">
+        <div class="eleven columns">
+          <table id="column-table" class="charts-css column">
+            <caption></caption>
+            <tbody>
+              <tr id="parent"></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <br />
+      <div class="row">
+        <div class="four columns">
+          <button onclick="Spawn();">Spawn</button>
+          <button onclick="Randomize();">Randomize</button>
+        </div>
+        <div class="eight columns">
+          <button onclick="insertionSort();">Insertion Sort</button>
+          <button onclick="bubbleSort();">Bubble Sort</button>
+          <button onclick="selectionSort();">Selection Sort</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
