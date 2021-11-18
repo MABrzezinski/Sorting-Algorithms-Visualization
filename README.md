@@ -8,6 +8,9 @@ Using:
 
 LOG
 --------
+Ver 0.15
+  * Log showing messages about current state of sorting
+
 Ver 0.1
   * Spawn columns with random values
   * Randomize spawned columns
