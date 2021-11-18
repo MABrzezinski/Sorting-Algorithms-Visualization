@@ -26,24 +26,24 @@ function RandValue() {
 }
 
 // Function that deletes all columns from <tr> tag in <tbody>
-function removeAllChildNodes() {
-  let parent = document.getElementById("parent");
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
+function removeAllChildNodesTable() {
+  let columns_parent = document.getElementById("columns_parent");
+  while (columns_parent.firstChild) {
+    columns_parent.removeChild(columns_parent.firstChild);
   }
 }
 
 // Function for rendering columns array
 function Render() {
-  removeAllChildNodes();
+  removeAllChildNodesTable();
   for (i = 0; i < columns.length; i++) {
-    let parent = document.getElementById("parent");
+    let columns_parent = document.getElementById("columns_parent");
     let colToAdd = document.createElement("td");
     colToAdd.setAttribute("id", columns[i].id);
     colToAdd.style.setProperty("--size", columns[i].value);
     colToAdd.style.setProperty("--color", columns[i].color);
     colToAdd.innerHTML = columns[i].value;
-    parent.appendChild(colToAdd);
+    columns_parent.appendChild(colToAdd);
   }
 }
 
@@ -64,6 +64,24 @@ function Randomize() {
   selectIndex = 0;
 }
 
+// Function that deletes all paragraphs from from under the table
+function removeAllChildNodesIndicators() {
+  let indicators_parent = document.getElementById("indicators_parent");
+  while (indicators_parent.firstChild) {
+    indicators_parent.removeChild(indicators_parent.firstChild);
+  }
+}
+
+//Function for rendering indicator messages
+function renderIndicator(message) {
+  removeAllChildNodesIndicators();
+  let indicators_parent = document.getElementById("indicators_parent");
+  let msgToAdd = document.createElement("p");
+  msgToAdd.setAttribute("class", "indicator");
+  msgToAdd.innerHTML = message;
+  indicators_parent.appendChild(msgToAdd);
+}
+
 //--------SORTING--------//
 //Below you find the code responsible for sorting algorithms
 
@@ -82,6 +100,7 @@ function insertionSortStep() {
     if (columns[currentIndex] === undefined) {
       console.log("Columns are sorted");
       clearInterval(interval);
+      renderIndicator("Sorting is finished. Randomize and sort again :)");
       return columns;
     }
   }
@@ -94,6 +113,7 @@ function insertionSortStep() {
 
 //This function calls one step of insertion sort every given interval
 function insertionSort() {
+  renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     insertionSortStep();
     Render();
@@ -130,6 +150,7 @@ function bubbleSortStep() {
     bubbleIndex = 0;
     noSwaps = 0;
     console.log("Columns are sorted");
+    renderIndicator("Sorting is finished. Randomize and sort again :)");
   }
 
   if (bubbleIndex === n) {
@@ -140,6 +161,7 @@ function bubbleSortStep() {
 
 //This function calls one step of the bubble sort every given interval
 function bubbleSort() {
+  renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     bubbleSortStep();
     Render();
@@ -170,11 +192,13 @@ function selectionSortStep() {
     selectIndex = 0;
     clearInterval(interval);
     console.log("Columns are sorted");
+    renderIndicator("Sorting is finished. Randomize and sort again :)");
   }
 }
 
 //This function calls one step of the selection sort every given interval
 function selectionSort() {
+  renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     selectionSortStep();
     Render();
