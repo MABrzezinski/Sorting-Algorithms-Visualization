@@ -110,6 +110,11 @@ function renderIndicator(message) {
   indicators_parent.appendChild(msgToAdd);
 }
 
+// Safety in case someone spawn only one element and then attempt to sort it.
+function ifOne() {
+  
+}
+
 //--SORTING----------------------------------------------------------------------------//
 //Below you find the code responsible for sorting algorithms
 
@@ -141,6 +146,12 @@ function insertionSortStep() {
 
 //This function calls one step of insertion sort every given interval
 function insertionSort() {
+  // Safety in case someone spawn zero or only one element and then attempt to sort it.
+  if (columns.length <= 1) {
+    renderIndicator("There is not enough columns to sort. Spawn more :)");
+    clearInterval(interval);
+    return;
+  }
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     insertionSortStep();
@@ -160,6 +171,7 @@ let noSwaps = 0;
 
 //This function is one "step" of the bubble sort
 function bubbleSortStep() {
+
   let n = columns.length - 1;
   let currentElement = columns[bubbleIndex];
   let nextElement = columns[bubbleIndex + 1];
@@ -189,6 +201,12 @@ function bubbleSortStep() {
 
 //This function calls one step of the bubble sort every given interval
 function bubbleSort() {
+  // Safety in case someone spawn zero or only one element and then attempt to sort it.
+  if (columns.length <= 1) {
+    renderIndicator("There is not enough columns to sort. Spawn more :)");
+    clearInterval(interval);
+    return;
+  }
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     bubbleSortStep();
@@ -203,6 +221,7 @@ let selectIndex = 0;
 
 //This function is one "step" of the selection sort
 function selectionSortStep() {
+
   let indexOfMin = selectIndex;
   for (let i = selectIndex + 1; i < columns.length; i++) {
     if (columns[i].value < columns[indexOfMin].value) {
@@ -226,6 +245,12 @@ function selectionSortStep() {
 
 //This function calls one step of the selection sort every given interval
 function selectionSort() {
+  // Safety in case someone spawn zero or only one element and then attempt to sort it.
+  if (columns.length <= 1) {
+    renderIndicator("There is not enough columns to sort. Spawn more :)");
+    clearInterval(interval);
+    return;
+  }
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     selectionSortStep();
@@ -255,6 +280,7 @@ let heapArray = [];
 
 //This function
 function minHeapSortStep() {
+
   //If heapIndex points to the root of the tree then it starts from the end.
   if (heapIndex === 0) {
     heapIndex = columns.length - 1;
@@ -331,6 +357,12 @@ function minHeapSortStep() {
 
 //This function calls one step of the heap sort every given interval
 function heapSort() {
+  // Safety in case someone spawn zero or only one element and then attempt to sort it.
+  if (columns.length <= 1) {
+    renderIndicator("There is not enough columns to sort. Spawn more :)");
+    clearInterval(interval);
+    return;
+  }
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     minHeapSortStep();
@@ -386,12 +418,6 @@ let leftRightDivided = false;
 
 // Calls one step of merge sort
 function mergeSortStep() {
-  // Safety in case someone spawn only one element and then attempt to sort it.
-  if (columns.length === 1) {
-    console.log("Columns are sorted");
-    renderIndicator("There is only one column. Spawn more :)");
-    return;
-  }
 
   // Explained in intro to merge sort section.
   if (columns.length > 8) {
@@ -541,6 +567,12 @@ function mergeSortStep() {
 
 //This function calls one step of the merge sort every given interval
 function mergeSort() {
+  // Safety in case someone spawn zero or only one element and then attempt to sort it.
+  if (columns.length <= 1) {
+    renderIndicator("There is not enough columns to sort. Spawn more :)");
+    clearInterval(interval);
+    return;
+  }
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     mergeSortStep();
