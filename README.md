@@ -8,6 +8,9 @@ Using:
 
 LOG
 --------
+Ver 0.2
+  * Visualization of heap sort
+
 Ver 0.15
   * Log showing messages about current state of sorting
 
