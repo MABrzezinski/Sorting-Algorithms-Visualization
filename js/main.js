@@ -110,10 +110,32 @@ function renderIndicator(message) {
   indicators_parent.appendChild(msgToAdd);
 }
 
-// Safety in case someone spawn only one element and then attempt to sort it.
-function ifOne() {
-  
+// Function for disabling buttons while sorting is in process. It also gives buttons visual indication by blocking hovering effect. Function is called when sorting is finished, so it is also used to return to normal apperance of clicked algorithm button (see snippet below).
+function buttonsDisabled(boolean) {
+  const allButtons = document.querySelectorAll("button");
+  allButtons.forEach((item) => (item.disabled = boolean));
+ 
+  if (boolean === false) {
+    allButtons.forEach((item) => (item.classList.add("button_hover")));
+    algButtons.forEach(function (item) {
+      item.style.backgroundColor = "white";
+      item.classList.remove("active");
+    });
+  }
+
+  if (boolean === true) {
+    allButtons.forEach((item) => (item.classList.remove("button_hover")));
+  }
 }
+
+// Code that changing apperance of a clicked alogorithm button. It gives it "focused" look and distinctive bgcolour.
+const algButtons = document.querySelectorAll(".alg-btn");
+algButtons.forEach((el) =>
+  el.addEventListener("click", (event) => {
+    event.target.style.backgroundColor = "#5aa5ffbf";
+    event.target.classList.add("active");
+  })
+);
 
 //--SORTING----------------------------------------------------------------------------//
 //Below you find the code responsible for sorting algorithms
@@ -134,6 +156,7 @@ function insertionSortStep() {
       console.log("Columns are sorted");
       clearInterval(interval);
       renderIndicator("Sorting is finished. Randomize and sort again :)");
+      buttonsDisabled(false);
       return columns;
     }
   }
@@ -152,6 +175,7 @@ function insertionSort() {
     clearInterval(interval);
     return;
   }
+  buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     insertionSortStep();
@@ -171,7 +195,6 @@ let noSwaps = 0;
 
 //This function is one "step" of the bubble sort
 function bubbleSortStep() {
-
   let n = columns.length - 1;
   let currentElement = columns[bubbleIndex];
   let nextElement = columns[bubbleIndex + 1];
@@ -191,6 +214,7 @@ function bubbleSortStep() {
     noSwaps = 0;
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
+    buttonsDisabled(false);
   }
 
   if (bubbleIndex === n) {
@@ -207,6 +231,7 @@ function bubbleSort() {
     clearInterval(interval);
     return;
   }
+  buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     bubbleSortStep();
@@ -221,7 +246,6 @@ let selectIndex = 0;
 
 //This function is one "step" of the selection sort
 function selectionSortStep() {
-
   let indexOfMin = selectIndex;
   for (let i = selectIndex + 1; i < columns.length; i++) {
     if (columns[i].value < columns[indexOfMin].value) {
@@ -240,6 +264,7 @@ function selectionSortStep() {
     clearInterval(interval);
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
+    buttonsDisabled(false);
   }
 }
 
@@ -251,6 +276,7 @@ function selectionSort() {
     clearInterval(interval);
     return;
   }
+  buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     selectionSortStep();
@@ -280,7 +306,6 @@ let heapArray = [];
 
 //This function
 function minHeapSortStep() {
-
   //If heapIndex points to the root of the tree then it starts from the end.
   if (heapIndex === 0) {
     heapIndex = columns.length - 1;
@@ -352,6 +377,7 @@ function minHeapSortStep() {
     clearInterval(interval);
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
+    buttonsDisabled(false);
   }
 }
 
@@ -363,6 +389,7 @@ function heapSort() {
     clearInterval(interval);
     return;
   }
+  buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     minHeapSortStep();
@@ -418,7 +445,6 @@ let leftRightDivided = false;
 
 // Calls one step of merge sort
 function mergeSortStep() {
-
   // Explained in intro to merge sort section.
   if (columns.length > 8) {
     renderIndicator(
@@ -536,6 +562,7 @@ function mergeSortStep() {
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
     clearInterval(interval);
+    buttonsDisabled(false);
     return;
   }
 
@@ -573,6 +600,7 @@ function mergeSort() {
     clearInterval(interval);
     return;
   }
+  buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
   interval = setInterval(function () {
     mergeSortStep();
