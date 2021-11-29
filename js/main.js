@@ -1,5 +1,6 @@
-//--MAIN----------------------------------------------------------------------------//
-//Below you find the code responsible for maintenance of columns
+/* ==========================================================================
+   COLUMNS LOGIC AND BEHAVIOUR
+   ========================================================================== */
 
 // Array of column-objects - the columns array
 let columns = [];
@@ -36,30 +37,6 @@ function removeAllChildNodesTable() {
 // Function for rendering columns array
 function render() {
   removeAllChildNodesTable();
-  for (i = 0; i < columns.length; i++) {
-    let columns_parent = document.getElementById("columns_parent");
-    let colToAdd = document.createElement("td");
-    // colToAdd.setAttribute("id", columns[i].id);
-    colToAdd.style.setProperty("--size", columns[i].value);
-    colToAdd.style.setProperty("--color", columns[i].color);
-    colToAdd.innerHTML = columns[i].value;
-    columns_parent.appendChild(colToAdd);
-  }
-}
-
-// Does the same what render() does but first it renders array with sorted elements for heap sort and then remaining elements
-// from columns array.
-function renderForHeap() {
-  removeAllChildNodesTable();
-  for (i = 0; i < heapArray.length; i++) {
-    let columns_parent = document.getElementById("columns_parent");
-    let colToAdd = document.createElement("td");
-    // colToAdd.setAttribute("id", heapArray[i].id);
-    colToAdd.style.setProperty("--size", heapArray[i].value);
-    colToAdd.style.setProperty("--color", heapArray[i].color);
-    colToAdd.innerHTML = heapArray[i].value;
-    columns_parent.appendChild(colToAdd);
-  }
   for (i = 0; i < columns.length; i++) {
     let columns_parent = document.getElementById("columns_parent");
     let colToAdd = document.createElement("td");
@@ -110,40 +87,72 @@ function renderIndicator(message) {
   indicators_parent.appendChild(msgToAdd);
 }
 
-// Function for disabling buttons while sorting is in process. It also gives buttons visual indication by blocking hovering effect. Function is called when sorting is finished, so it is also used to return to normal apperance of clicked algorithm button (see snippet below).
+/* ==========================================================================
+   BUTTONS BEHAVIOUR
+   ========================================================================== */
+
+const spawnBtn = document.getElementById("spawnBtn");
+spawnBtn.onclick = Spawn;
+
+const randomizeBtn = document.getElementById("randomizeBtn");
+randomizeBtn.onclick = Randomize;
+
+const insertionSortBtn = document.getElementById("insertionSortBtn");
+insertionSortBtn.onclick = insertionSort;
+
+const bubbleSortBtn = document.getElementById("bubbleSortBtn");
+bubbleSortBtn.onclick = bubbleSort;
+
+const selectionSortBtn = document.getElementById("selectionSortBtn");
+selectionSortBtn.onclick = selectionSort;
+
+const heapSortBtn = document.getElementById("heapSortBtn");
+heapSortBtn.onclick = heapSort;
+
+const mergeSortBtn = document.getElementById("mergeSortBtn");
+mergeSortBtn.onclick = mergeSort;
+
+const allButtons = document.querySelectorAll("button");
+
+const algButtons = document.querySelectorAll(".alg-btn");
+
+// Function for disabling buttons while sorting is in process. It also gives buttons visual indication by blocking hovering effect.
 function buttonsDisabled(boolean) {
-  const allButtons = document.querySelectorAll("button");
   allButtons.forEach((item) => (item.disabled = boolean));
- 
+
   if (boolean === false) {
-    allButtons.forEach((item) => (item.classList.add("button_hover")));
-    algButtons.forEach(function (item) {
-      item.style.backgroundColor = "white";
-      item.classList.remove("active");
-    });
+    allButtons.forEach((item) => item.classList.add("button_hover"));
   }
 
   if (boolean === true) {
-    allButtons.forEach((item) => (item.classList.remove("button_hover")));
+    allButtons.forEach((item) => item.classList.remove("button_hover"));
   }
 }
 
-// Code that changing apperance of a clicked alogorithm button. It gives it "focused" look and distinctive bgcolour.
-const algButtons = document.querySelectorAll(".alg-btn");
-algButtons.forEach((el) =>
-  el.addEventListener("click", (event) => {
-    event.target.style.backgroundColor = "#5aa5ffbf";
-    event.target.classList.add("active");
-  })
-);
+// Code that changing appearance of clicked alogorithm button. It gives it "focused" look and distinctive bgcolour.
+function algBtnFocused(variableThatHoldsBtn) {
+  variableThatHoldsBtn.style.backgroundColor = "#5aa5ffbf";
+  variableThatHoldsBtn.classList.add("active");
+}
 
-//--SORTING----------------------------------------------------------------------------//
-//Below you find the code responsible for sorting algorithms
+// Changes appearance back to normal.
+function algBtnsNormal() {
+  algButtons.forEach(function (item) {
+    item.style.backgroundColor = "white";
+    item.classList.remove("active");
+  });
+}
+
+/* ==========================================================================
+   SORTING ALGORITHMS
+   ========================================================================== */
 
 //Variable shared by all sorting algorithms functions, it holds interval id for setInterval methods
 let interval;
 
-//---Insertion Sort---//
+/* =====================================
+   Insertion Sort
+   ===================================== */
 
 //This function is one "step" of the insertion sort
 function insertionSortStep() {
@@ -157,6 +166,7 @@ function insertionSortStep() {
       clearInterval(interval);
       renderIndicator("Sorting is finished. Randomize and sort again :)");
       buttonsDisabled(false);
+      algBtnsNormal();
       return columns;
     }
   }
@@ -169,10 +179,12 @@ function insertionSortStep() {
 
 //This function calls one step of insertion sort every given interval
 function insertionSort() {
+  algBtnFocused(insertionSortBtn);
   // Safety in case someone spawn zero or only one element and then attempt to sort it.
   if (columns.length <= 1) {
     renderIndicator("There is not enough columns to sort. Spawn more :)");
     clearInterval(interval);
+    algBtnsNormal();
     return;
   }
   buttonsDisabled(true);
@@ -183,15 +195,13 @@ function insertionSort() {
   }, 500);
 }
 
-//---Bubble Sort---//
+/* =====================================
+   Bubble Sort
+   ===================================== */
 
 //Value of this variable tells which element of the columns array is being tested in current step.
 //bubbleIndex resets after iterating through all elements of the columns array.
 let bubbleIndex = 0;
-
-//Function bubbleSortStep "knows" that array is sorted when number of noSwaps matches columns.length - 1.
-//NoSwaps incrementation occurs when tested element doesn't have to be swapped with next element.
-let noSwaps = 0;
 
 //This function is one "step" of the bubble sort
 function bubbleSortStep() {
@@ -202,33 +212,38 @@ function bubbleSortStep() {
     columns[bubbleIndex] = nextElement;
     columns[bubbleIndex + 1] = currentElement;
     render();
-  } else {
-    noSwaps++;
   }
   bubbleIndex++;
 
-  //Checks if the array is sorted
-  if (noSwaps === n) {
+  //Checks if columns array is sorted and if yes, stops sorting.
+  let sortedCount = 0;
+  for (let i = 1; i < columns.length; i++) {
+    if (columns[i].value >= columns[i - 1].value) {
+      sortedCount++;
+    }
+  }
+  if (sortedCount === (columns.length - 1)) {
     clearInterval(interval);
     bubbleIndex = 0;
-    noSwaps = 0;
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
     buttonsDisabled(false);
+    algBtnsNormal();
   }
 
   if (bubbleIndex === n) {
     bubbleIndex = 0;
-    noSwaps = 0;
   }
 }
 
 //This function calls one step of the bubble sort every given interval
 function bubbleSort() {
+  algBtnFocused(bubbleSortBtn);
   // Safety in case someone spawn zero or only one element and then attempt to sort it.
   if (columns.length <= 1) {
     renderIndicator("There is not enough columns to sort. Spawn more :)");
     clearInterval(interval);
+    algBtnsNormal();
     return;
   }
   buttonsDisabled(true);
@@ -239,13 +254,33 @@ function bubbleSort() {
   }, 500);
 }
 
-//---Selection Sort---//
+/* =====================================
+   Selection Sort
+   ===================================== */
 
 //Value of this variable tells which element of the columns array is being tested in current step.
 let selectIndex = 0;
 
 //This function is one "step" of the selection sort
 function selectionSortStep() {
+  
+  //Checks if columns array is sorted and if yes, stops sorting.
+  let sortedCount = 0;
+  for (let i = 1; i < columns.length; i++) {
+    if (columns[i].value >= columns[i - 1].value) {
+      sortedCount++;
+    }
+  }
+  if (sortedCount === (columns.length - 1)) {
+    clearInterval(interval);
+    selectIndex = 0;
+    console.log("Columns are sorted");
+    renderIndicator("Sorting is finished. Randomize and sort again :)");
+    buttonsDisabled(false);
+    algBtnsNormal();
+    return;
+  }
+  
   let indexOfMin = selectIndex;
   for (let i = selectIndex + 1; i < columns.length; i++) {
     if (columns[i].value < columns[indexOfMin].value) {
@@ -259,21 +294,16 @@ function selectionSortStep() {
     ];
   }
   selectIndex++;
-  if (selectIndex === columns.length) {
-    selectIndex = 0;
-    clearInterval(interval);
-    console.log("Columns are sorted");
-    renderIndicator("Sorting is finished. Randomize and sort again :)");
-    buttonsDisabled(false);
-  }
 }
 
 //This function calls one step of the selection sort every given interval
 function selectionSort() {
+  algBtnFocused(selectionSortBtn);
   // Safety in case someone spawn zero or only one element and then attempt to sort it.
   if (columns.length <= 1) {
     renderIndicator("There is not enough columns to sort. Spawn more :)");
     clearInterval(interval);
+    algBtnsNormal();
     return;
   }
   buttonsDisabled(true);
@@ -284,15 +314,40 @@ function selectionSort() {
   }, 500);
 }
 
-//---Heap Sort---//
+/* =====================================
+   Heap Sort
+   ===================================== */
 
-// Heap property
-// -------------
+// ----Heap property----
 // leftChildIndex = (2 * parentIndex) + 1
 // parentIndex = (leftChildIndex - 1) / 2
 //
 // rightChildIndex = (2 * parentIndex) + 2
 // parentIndex = (rightChildIndex - 2) / 2
+
+// Does the same what render() does but first it renders array with sorted elements for heap sort and then remaining elements
+// from columns array.
+function renderForHeap() {
+  removeAllChildNodesTable();
+  for (i = 0; i < heapArray.length; i++) {
+    let columns_parent = document.getElementById("columns_parent");
+    let colToAdd = document.createElement("td");
+    // colToAdd.setAttribute("id", heapArray[i].id);
+    colToAdd.style.setProperty("--size", heapArray[i].value);
+    colToAdd.style.setProperty("--color", heapArray[i].color);
+    colToAdd.innerHTML = heapArray[i].value;
+    columns_parent.appendChild(colToAdd);
+  }
+  for (i = 0; i < columns.length; i++) {
+    let columns_parent = document.getElementById("columns_parent");
+    let colToAdd = document.createElement("td");
+    // colToAdd.setAttribute("id", columns[i].id);
+    colToAdd.style.setProperty("--size", columns[i].value);
+    colToAdd.style.setProperty("--color", columns[i].color);
+    colToAdd.innerHTML = columns[i].value;
+    columns_parent.appendChild(colToAdd);
+  }
+}
 
 // Variable holds index of rightmost unheapified node.
 let heapIndex = columns.length - 1;
@@ -306,6 +361,27 @@ let heapArray = [];
 
 //This function
 function minHeapSortStep() {
+
+  //Checks if columns array is sorted and if yes, stops sorting.
+  let sortedCount = 0;
+  let arrayForCheck = [...heapArray, ...columns];
+  for (let i = 1; i < arrayForCheck.length; i++) {
+    if (arrayForCheck[i].value >= arrayForCheck[i - 1].value) {
+      sortedCount++;
+    }
+  }
+  if (sortedCount === (arrayForCheck.length - 1)) {
+    clearInterval(interval);
+    columns = arrayForCheck;
+    render();
+    heapArray = [];
+    console.log("Columns are sorted");
+    renderIndicator("Sorting is finished. Randomize and sort again :)");
+    buttonsDisabled(false);
+    algBtnsNormal();
+    return;
+  }
+  
   //If heapIndex points to the root of the tree then it starts from the end.
   if (heapIndex === 0) {
     heapIndex = columns.length - 1;
@@ -323,7 +399,7 @@ function minHeapSortStep() {
         ? heapIndex
         : heapIndex - 1;
 
-    //If child node with lower value has lower value than parent, then they swap.
+    //If child node with lower value has lower value than parent, then they swap. Version for two child nodes.
     if (columns[lowerOfTwo].value < columns[(heapIndex - 2) / 2].value) {
       //explained in comment about heap property.
       [columns[lowerOfTwo], columns[(heapIndex - 2) / 2]] = [
@@ -339,22 +415,21 @@ function minHeapSortStep() {
       heapIndex = heapIndex - 2;
     }
   } else {
-    //One child node.
 
-    //If child node has lower value than parent, then they swap.
+    //If child node has lower value than parent, then they swap. Version for one child node.
     if (columns[heapIndex].value < columns[(heapIndex - 1) / 2].value) {
       [columns[heapIndex], columns[(heapIndex - 1) / 2]] = [
         columns[(heapIndex - 1) / 2],
         columns[heapIndex],
       ];
 
-      // Moves to another rightmost unheapified parent - children trio.
+      // Moves to another rightmost unheapified parent-children trio.
       heapIndex--;
     } else {
       // Parent has lower value than children. There's no swap.
       heapNoSwaps++;
 
-      // Moves to another rightmost unheapified parent - children trio.
+      // Moves to another rightmost unheapified parent-children trio.
       heapIndex--;
     }
   }
@@ -378,25 +453,31 @@ function minHeapSortStep() {
     console.log("Columns are sorted");
     renderIndicator("Sorting is finished. Randomize and sort again :)");
     buttonsDisabled(false);
+    algBtnsNormal();
   }
 }
 
 //This function calls one step of the heap sort every given interval
 function heapSort() {
+  algBtnFocused(heapSortBtn);
   // Safety in case someone spawn zero or only one element and then attempt to sort it.
   if (columns.length <= 1) {
     renderIndicator("There is not enough columns to sort. Spawn more :)");
     clearInterval(interval);
+    algBtnsNormal();
     return;
   }
   buttonsDisabled(true);
   renderIndicator("Sorting in progress...");
+  heapIndex = columns.length - 1;
   interval = setInterval(function () {
     minHeapSortStep();
   }, 500);
 }
 
-//---Merge Sort---//
+/* =====================================
+   Merge Sort
+   ===================================== */
 // Merge sort is essentially simple code that merges and sorts arrays. It compares first elements of two internally sorted arrays (one element array is internally sorted) and then pushes element with lower value to an array that holds merged and sorted elements. When I am reffering to merge sorting, I am reffering to this.
 // For now Merge Sort works only for arrays that have maximum of 8 elements. To explain this I need to explain how the implementation works. I assume that reader has a knowledge about merge sorting.
 // First of all it takes an array and halves it (Math.floor) to left and right unsorted arrays. Then function mergeHalfing() halves each of left and right unsorted arrays and nest it in respective arrays. It looks like this mergeLeftUnsorted = [1,3,2] => [[1],[3,2]]. I did it to be able sort every 2-elements subarray, and then sort-merge it with remaining subarray. So the next step is [[1],[3,2]] => mergeLeftSorted = [1,2,3]. And then mergeLeftSorted is being merge-sorted with mergeRightSorted. Okay so where's the problem?
@@ -445,13 +526,28 @@ let leftRightDivided = false;
 
 // Calls one step of merge sort
 function mergeSortStep() {
-  // Explained in intro to merge sort section.
-  if (columns.length > 8) {
-    renderIndicator(
-      "Sorry but Merge Sort works only for maximum of 8 columns :(<br/>Refresh and spawn less columns or choose another algorithm."
-    );
-    return;
+
+//Checks if columns array is sorted and if yes, stops sorting.
+let sortedCount = 0;
+for (let i = 1; i < columns.length; i++) {
+  if (columns[i].value >= columns[i - 1].value) {
+    sortedCount++;
   }
+}
+if (sortedCount === (columns.length - 1)) {
+  leftRightDivided = false;
+    mergeLeftUnsort = [];
+    mergeLeftSorted = [];
+    mergeRightUnsort = [];
+    mergeRightSorted = [];
+    mergeTemp = [];
+    console.log("Columns are sorted");
+    renderIndicator("Sorting is finished. Randomize and sort again :)");
+    clearInterval(interval);
+    buttonsDisabled(false);
+    algBtnsNormal();
+    return;
+}
 
   // On first step it takes columns array and distributes halves of it to separate arrays. Then the elements are being grouped into smaller and smaller halves arrays (Math.floor based), with maximum elements of 2.
   if (!leftRightDivided) {
@@ -552,19 +648,20 @@ function mergeSortStep() {
   }
 
   // mergeLeftSorted and mergeRightSorted are being merge sorted into final array
-  if ((mergeLeftSorted.length === 0) & (mergeRightSorted.length === 0)) {
-    leftRightDivided = false;
-    mergeLeftUnsort = [];
-    mergeLeftSorted = [];
-    mergeRightUnsort = [];
-    mergeRightSorted = [];
-    mergeTemp = [];
-    console.log("Columns are sorted");
-    renderIndicator("Sorting is finished. Randomize and sort again :)");
-    clearInterval(interval);
-    buttonsDisabled(false);
-    return;
-  }
+  // if ((mergeLeftSorted.length === 0) & (mergeRightSorted.length === 0)) {
+  //   leftRightDivided = false;
+  //   mergeLeftUnsort = [];
+  //   mergeLeftSorted = [];
+  //   mergeRightUnsort = [];
+  //   mergeRightSorted = [];
+  //   mergeTemp = [];
+  //   console.log("Columns are sorted");
+  //   renderIndicator("Sorting is finished. Randomize and sort again :)");
+  //   clearInterval(interval);
+  //   buttonsDisabled(false);
+  //   algBtnsNormal();
+  //   return;
+  // }
 
   if (mergeLeftSorted.length > 0 && mergeRightSorted.length > 0) {
     mergeTemp.push(
@@ -594,10 +691,21 @@ function mergeSortStep() {
 
 //This function calls one step of the merge sort every given interval
 function mergeSort() {
+  algBtnFocused(mergeSortBtn);
   // Safety in case someone spawn zero or only one element and then attempt to sort it.
   if (columns.length <= 1) {
     renderIndicator("There is not enough columns to sort. Spawn more :)");
+    algBtnsNormal();
     clearInterval(interval);
+    return;
+  }
+  // Explained in intro to merge sort section.
+  if (columns.length > 8) {
+    renderIndicator(
+      "Sorry, but Merge Sort works only for maximum of 8 columns :(<br/>Refresh and spawn less columns or choose another algorithm."
+    );
+    clearInterval(interval);
+    algBtnsNormal();
     return;
   }
   buttonsDisabled(true);
