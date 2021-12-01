@@ -1,6 +1,6 @@
 # Sorting-Algorithms-Visualization
-Simple page that shows how few of the most popular sorting algorithms work
-See it at https://brzezinskimichal.pl/prjcts/SAV/
+Simple page that shows how few of the most popular sorting algorithms work </br>
+See it at https://brzezinskimichal.pl/prjcts/SAV/ </br>
 Read about the project at https://brzezinskimichal.pl/sorting-algorithms-visualization/
 
 Using:
