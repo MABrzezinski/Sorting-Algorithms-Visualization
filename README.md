@@ -1,5 +1,7 @@
 # Sorting-Algorithms-Visualization
 Simple page that shows how few of the most popular sorting algorithms work
+See it at https://brzezinskimichal.pl/prjcts/SAV/
+Read about the project at https://brzezinskimichal.pl/sorting-algorithms-visualization/
 
 Using:
   * Pure JS
